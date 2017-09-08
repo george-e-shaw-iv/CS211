@@ -1,4 +1,4 @@
-#__CS211__ with __Adam Sweeny__
+# CS211 with Adam Sweeny
 
 ======
 
