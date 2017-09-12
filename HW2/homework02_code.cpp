@@ -7,6 +7,7 @@
  */
 
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -20,6 +21,31 @@ int main() {
 			cout << "#";
 		}
 		cout << "\n";
+	}
+
+	cout << "\n\n";
+
+	//Diamond
+	int diamondHashCalc;
+	for(int line = 0; line < 7; line++) {
+		for(int spaces = abs(line - 3); spaces > 0; spaces--) {
+			cout << " ";
+		}
+
+		if(line > 3) diamondHashCalc = 2 + (abs(line - 6) * 2);
+		else diamondHashCalc = 2 + (line * 2);
+
+		for(int hashes = diamondHashCalc; hashes > 0; hashes--) {
+			cout << "#";
+		}
+		cout << "\n";
+	}
+
+	cout << "\n\n";
+
+	//X
+	for(int line = 0; line < 7; line++) {
+		
 	}
 
 	return 0;
