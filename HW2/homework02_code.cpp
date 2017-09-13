@@ -45,7 +45,11 @@ int main() {
 
 	//X
 	for(int line = 0; line < 7; line++) {
-		
+		for(int singleChar = 0; singleChar < 7; singleChar++) {
+			if(line == singleChar || (6 - line) == singleChar) cout << "#";
+			else cout << " ";
+		}
+		cout << "\n";
 	}
 
 	return 0;
