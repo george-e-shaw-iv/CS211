@@ -3,7 +3,7 @@
  * Name: George Shaw
  * WSUID: g829g576
  * HW#: 3
- * Description: A loan calculator.
+ * Description: A loan calculator that uses a given loan, rate, and monthly payment to make calculations for 3 years.
  */
 
 #include <iostream>
