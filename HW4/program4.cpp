@@ -22,7 +22,8 @@ void dispenseChange(int change);
 int main() {
 	int selectionPrice, depositedMoney, change;
 	char anotherPurchase = 'Y';
-
+	
+	//Input loop
 	while((char)toupper(anotherPurchase) == 'Y') {
 		selectionPrice = menu();
 		depositedMoney = acceptMoney(selectionPrice);
@@ -41,6 +42,11 @@ int main() {
 	return 0;
 }
 
+/*
+   Function that outputs the menu and takes in/validates input.
+   
+   @return int selectedSnackPrice
+*/
 int menu(void) {
 	struct snack {
 		char identifier;
@@ -89,6 +95,12 @@ int menu(void) {
 	return ceil((snackArray[i].price) * 100);
 }
 
+/*
+   Function that outputs the accepted types of change and takes in input to pay.
+
+   @param price
+   @return depositedChange
+*/
 int acceptMoney(int price) {
 	struct money {
 		char identifier;
@@ -134,6 +146,13 @@ int acceptMoney(int price) {
 	return depositedMoney;
 }
 
+/*
+   Function that computes the amount of changed owed
+
+   @param totalPaid
+   @param totalPrice
+   @return changeOwed
+*/
 int computeChange(int totalPaid, int totalPrice) {
 	return (totalPaid - totalPrice);
 }
@@ -144,6 +163,8 @@ int computeChange(int totalPaid, int totalPrice) {
 
 	This function assumes that the internal array 'acceptedTypes' is structured
 	so that the coins are arranged from greatest to least in terms of value.
+
+	@param change
 */
 void dispenseChange(int change) {
 	if(change == 0) {
