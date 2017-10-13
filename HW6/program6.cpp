@@ -17,8 +17,6 @@ const int SHIFT = 4;
 
 void caesarEncode(char (&message)[SIZE], char delimeter, int cShift, int arrSize);
 void caesarDecode(char (&message)[SIZE], char delimeter, int cShift, int arrSize);
-void railFenceEncode(char (&message)[SIZE], char delimeter, int layers, int arrSize);
-void railFenceDecode(char (&message)[SIZE], char delimeter, int layers, int arrSize);
 void printArray(char array[], char delimeter, int arrSize);
 
 int main() {
@@ -38,11 +36,9 @@ int main() {
 	cout << endl;
 
 	caesarEncode(message, '\0', SHIFT, SIZE);
-	railFenceEncode(message, '\0', 2, SIZE);
 	printArray(message, '\0', SIZE);
 	cout << endl;
 
-	railFenceDecode(message, '\0', 2, SIZE);
 	caesarDecode(message, '\0', SHIFT, SIZE);
 	printArray(message, '\0', SIZE);
 	cout << endl;
@@ -120,46 +116,6 @@ void caesarDecode(char (&message)[SIZE], char delimeter, int cShift, int arrSize
 
 				message[i] = int_val;
 			}
-		}
-	}
-}
-
-/**/
-void railFenceEncode(char (&message)[SIZE], char delimeter, int layers, int arrSize) {
-	char msgCopy[SIZE];
-	int curPos = 0;
-	int delimeterPos;
-
-	for(int i = 0; i < arrSize; i++) {
-		if(message[i] == delimeter) {
-			delimeterPos = i;
-			break;
-		}
-		else {
-			msgCopy[i] = message[i];
-		}
-	}
-
-	for(int i = 0; i < layers; i++) {
-		for(int j = i; j < delimeterPos; j = j + layers) {
-			message[curPos] = msgCopy[j];
-			curPos++;
-		}
-	}
-}
-
-/**/
-void railFenceDecode(char (&message)[SIZE], char delimeter, int layers, int arrSize) {
-	char msgCopy[SIZE];
-	int delimeterPos;
-
-	for(int i = 0; i < arrSize; i++) {
-		if(message[i] == delimeter) {
-			delimeterPos = i;
-			break;
-		}
-		else {
-			msgCopy[i] = message[i];
 		}
 	}
 }
