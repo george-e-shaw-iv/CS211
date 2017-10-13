@@ -8,14 +8,17 @@
 
 #include <iostream>
 #include <ctype.h>
+#include <cstring>
 
 using namespace std;
 
 const int SIZE = 200;
 const int SHIFT = 4;
 
-void encode(char (&message)[SIZE], char delimeter, int cShift, int arrSize);
-void decode(char (&message)[SIZE], char delimeter, int cShift, int arrSize);
+void caesarEncode(char (&message)[SIZE], char delimeter, int cShift, int arrSize);
+void caesarDecode(char (&message)[SIZE], char delimeter, int cShift, int arrSize);
+void railFenceEncode(char (&message)[SIZE], char delimeter, int layers, int arrSize);
+void railFenceDecode(char (&message)[SIZE], char delimeter, int layers, int arrSize);
 void printArray(char array[], char delimeter, int arrSize);
 
 int main() {
@@ -34,11 +37,13 @@ int main() {
 	printArray(message, '\0', SIZE);
 	cout << endl;
 
-	encode(message, '\0', SHIFT, SIZE);
+	caesarEncode(message, '\0', SHIFT, SIZE);
+	railFenceEncode(message, '\0', 2, SIZE);
 	printArray(message, '\0', SIZE);
 	cout << endl;
 
-	decode(message, '\0', SHIFT, SIZE);
+	railFenceDecode(message, '\0', 2, SIZE);
+	caesarDecode(message, '\0', SHIFT, SIZE);
 	printArray(message, '\0', SIZE);
 	cout << endl;
 
@@ -59,7 +64,7 @@ int main() {
 	
 	@return void
  */
-void encode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
+void caesarEncode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
 	for(int i = 0; i < arrSize; i++) {
 		if(message[i] == delimeter) {
 			break;
@@ -96,7 +101,7 @@ void encode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
 	
 	@return
  */
-void decode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
+void caesarDecode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
 	for(int i = 0; i < arrSize; i++) {
 		if(message[i] == delimeter) {
 			break;
@@ -115,6 +120,46 @@ void decode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
 
 				message[i] = int_val;
 			}
+		}
+	}
+}
+
+/**/
+void railFenceEncode(char (&message)[SIZE], char delimeter, int layers, int arrSize) {
+	char msgCopy[SIZE];
+	int curPos = 0;
+	int delimeterPos;
+
+	for(int i = 0; i < arrSize; i++) {
+		if(message[i] == delimeter) {
+			delimeterPos = i;
+			break;
+		}
+		else {
+			msgCopy[i] = message[i];
+		}
+	}
+
+	for(int i = 0; i < layers; i++) {
+		for(int j = i; j < delimeterPos; j = j + layers) {
+			message[curPos] = msgCopy[j];
+			curPos++;
+		}
+	}
+}
+
+/**/
+void railFenceDecode(char (&message)[SIZE], char delimeter, int layers, int arrSize) {
+	char msgCopy[SIZE];
+	int delimeterPos;
+
+	for(int i = 0; i < arrSize; i++) {
+		if(message[i] == delimeter) {
+			delimeterPos = i;
+			break;
+		}
+		else {
+			msgCopy[i] = message[i];
 		}
 	}
 }
