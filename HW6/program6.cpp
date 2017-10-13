@@ -66,7 +66,6 @@ void encode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
 		}
 		else {
 			int int_val = message[i];
-			char char_val;
 
 			if(int_val < 65 || int_val > 90) {
 				continue;
@@ -77,8 +76,7 @@ void encode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
 					int_val -= 26;
 				}
 
-				char_val = int_val;
-				message[i] = char_val;
+				message[i] = int_val;
 			}
 		}
 	}
@@ -99,7 +97,26 @@ void encode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
 	@return
  */
 void decode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
+	for(int i = 0; i < arrSize; i++) {
+		if(message[i] == delimeter) {
+			break;
+		}
+		else {
+			int int_val = message[i];
 
+			if(int_val < 65 || int_val > 90) {
+				continue;
+			}
+			else {
+				int_val -= cShift;
+				while(int_val < 65) {
+					int_val += 26;
+				}
+
+				message[i] = int_val;
+			}
+		}
+	}
 }
 
 /*
