@@ -7,24 +7,39 @@
  */
 
 #include <iostream>
+#include <ctype.h>
 
 using namespace std;
 
 const int SIZE = 200;
 const int SHIFT = 4;
 
-void encode(char &message[], int shift);
-void decode(char &message[], int shift);
-void printArray(char array[], char delimeter);
+void encode(char (&message)[SIZE], char delimeter, int cShift, int arrSize);
+void decode(char (&message)[SIZE], char delimeter, int cShift, int arrSize);
+void printArray(char array[], char delimeter, int arrSize);
 
 int main() {
 	char message[SIZE];
 
-	cout << "Please enter a message (200 character limit): ";
+	cout << "Please enter a message (" << SIZE << " character limit): ";
 	cin.get(message, SIZE);
 	cout << endl;
 
-	printArray(message, '\0');
+	// Uppercase the character array
+	for(int i = 0; i < SIZE; i++) {
+		if(message[i] == '\0') break;
+		else message[i] = toupper(message[i]);
+	}
+
+	printArray(message, '\0', SIZE);
+	cout << endl;
+
+	encode(message, '\0', SHIFT, SIZE);
+	printArray(message, '\0', SIZE);
+	cout << endl;
+
+	decode(message, '\0', SHIFT, SIZE);
+	printArray(message, '\0', SIZE);
 	cout << endl;
 
 	return 0;
@@ -33,28 +48,57 @@ int main() {
 /*
 	A function used to encode messages using caesar shift
 
-	@param char message[]
+	@param char message[200]
 		The message to encode, passes by reference
-	@param int shift
+	@param char delimeter
+		The delimeter denoting the end of written data to the array
+	@param int cShift
 		The shift value used to encode the message
+	@param int arrSize
+		The size of the input array
 	
 	@return void
  */
-void encode(char &message[], int shift) {
+void encode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
+	for(int i = 0; i < arrSize; i++) {
+		if(message[i] == delimeter) {
+			break;
+		}
+		else {
+			int int_val = message[i];
+			char char_val;
 
+			if(int_val < 65 || int_val > 90) {
+				continue;
+			}
+			else {
+				int_val += cShift;
+				while(int_val > 90) {
+					int_val -= 26;
+				}
+
+				char_val = int_val;
+				message[i] = char_val;
+			}
+		}
+	}
 }
 
 /*
 	A function to decode messages encoded in caesar shift
 
-	@param char message[]
+	@param char message[200]
 		The message to decode, passes by reference
-	@param int shift
+	@param char delimeter
+		The delimeter denoting the end of written data to the array
+	@param int cShift
 		The shift value used to decode the message
+	@param int arrSize
+		The size of the input array
 	
 	@return
  */
-void decode(char &message[], int shift) {
+void decode(char (&message)[SIZE], char delimeter, int cShift, int arrSize) {
 
 }
 
@@ -65,12 +109,14 @@ void decode(char &message[], int shift) {
 		The array to be printed
 	@param char delimeter
 		The delimeter denoting the end of written data to the array
+	@param int arrSize
+		The size of the input array
 
 	@return
 		void
  */
-void printArray(char array[], char delimeter) {
-	for(unsigned int i = 0; i < (sizeof(array)/sizeof(*array)); i++) {
+void printArray(char array[], char delimeter, int arrSize) {
+	for(int i = 0; i < arrSize; i++) {
 		if(array[i] == delimeter) break;
 		else cout << array[i];
 	}
