@@ -13,22 +13,26 @@
 
 using namespace std;
 
+// This is an enum for denoting the type of zip code
 enum zipcode_type {
 	ROMAN,
 	POSTNET
 };
 
+// This is an enum for denoting the destination of print
 enum destination {
 	CONSOLE,
 	TEXT_FILE
 };
 
+// Class Zipcode is used for various operations on both postnet and roman zipcode types
 class Zipcode {
 	private:
 		int roman;
 		string postnet, barcode[2][27], file_name;
 		ofstream file;
 
+		// Function setPostnet takes the roman representation and gets the postnet representation
 		void setPostnet() {
 			if(this->roman == 0) return;
 
@@ -80,6 +84,7 @@ class Zipcode {
 			this->postnet += "1";
 		}
 
+		// Function setRoman takes the postnet representation and sets the roman representation of zip code
 		void setRoman() {
 			if(this->postnet == "") return;
 
@@ -123,6 +128,7 @@ class Zipcode {
 			}
 		}
 
+		// Function setBarcode takes the postnet representation in 1's and 0's and turns it into a bar code
 		void setBarcode() {
 			if(this->postnet == "") return;
 
@@ -151,6 +157,7 @@ class Zipcode {
 			this->barcode[0][pos] = "|";
 		}
 
+		// Funtion CreateFile is a helper function that creates the text file the bar code will be stored in
 		void CreateFile() {
 			if(this->roman == 0) return;
 
@@ -159,6 +166,11 @@ class Zipcode {
 		}
 
 	public:
+		/*
+		   Zipcode class constructor takes two parameters.
+		   "value" is the zipcode value in either postnet (1's and 0's) or roman.
+		   "type" is the type of zipcode denoted by the enum zipcode_type
+		 */
 		Zipcode(string value, zipcode_type type) {
 			switch(type) {
 				case ROMAN:
@@ -174,18 +186,22 @@ class Zipcode {
 			setBarcode();
 		}
 
+		// Zipcode class deconstructor closes the file stream.
 		~Zipcode() {
 			file.close();
 		}
 
+		// Function GetRoman is a getter that returns the private roman variable
 		int GetRoman() {
 			return this->roman;
 		}
 
+		// Function GetPOSTNET is a getter that returns the private postnet variable
 		string GetPOSTNET() {
 			return this->postnet;
 		}
 
+		// Function PrintBarcode takes a destination parameter and prints the barcode accordingly
 		void PrintBarcode(destination dest) {
 			if(this->barcode[0][0] == "") return;
 
