@@ -8,6 +8,8 @@
 
 #include <iostream>
 #include <string>
+#include <algorithm>
+#include <fstream>
 
 using namespace std;
 
@@ -24,19 +26,136 @@ enum destination {
 class Zipcode {
 	private:
 		int roman;
-		string postnet;
-		string barcode[2][27];
+		string postnet, barcode[2][27], file_name;
+		ofstream file;
 
 		void setPostnet() {
+			if(this->roman == 0) return;
 
+			this->postnet = "1";
+			string temp;
+
+			for(char c : to_string(this->roman)) {
+				int i = c - '0';
+				temp = "";
+
+				if(i == 0) {
+					temp = "11000";
+				}
+				else {
+					if(i >= 7) {
+						temp += "1";
+						i -= 7;
+					}
+					else {
+						temp += "0";
+					}
+
+					if(i >= 4) {
+						temp += "1";
+						i -= 4;
+					}
+					else {
+						temp += "0";
+					}
+
+					if(i >= 2) {
+						temp += "1";
+						i -= 2;
+					}
+					else {
+						temp += "0";
+					}
+
+					if(i >= 1) temp += "1";
+					else temp += "0";
+
+					if(count(temp.begin(), temp.end(), '1') == 1) temp += "1";
+					else temp += "0";
+				}
+
+				this->postnet += temp;
+			}
+
+			this->postnet += "1";
 		}
 
 		void setRoman() {
+			if(this->postnet == "") return;
 
+			string m_postnet = this->postnet.substr(1, this->postnet.size() - 1);
+			int count = 0, roman_digit = 0;
+			this->roman = 0;
+
+			for(char c : m_postnet) {
+				if(count == 5) {
+					if(roman_digit == 11) roman_digit = 0;
+
+					this->roman = stoi(to_string(this->roman) += to_string(roman_digit));
+
+					roman_digit = 0;
+					count = 0;
+				}
+
+				if(c == '0') {
+					count++;
+					continue;
+				}
+
+				switch(count) {
+					case 0:
+						roman_digit += 7;
+						break;
+					case 1:
+						roman_digit += 4;
+						break;
+					case 2:
+						roman_digit += 2;
+						break;
+					case 3:
+						roman_digit += 1;
+						break;
+					case 4:
+						break;
+				}
+
+				count++;
+			}
 		}
 
 		void setBarcode() {
+			if(this->postnet == "") return;
 
+			string m_postnet = this->postnet.substr(1, this->postnet.size() - 1);
+			int pos = 0;
+
+			this->barcode[0][pos] = "|";
+			this->barcode[1][pos] = "|";
+			pos++;
+
+			for(char c : m_postnet) {
+				switch(c) {
+					case '0':
+						this->barcode[0][pos] = " ";
+						this->barcode[1][pos] = "|";
+						break;
+					case '1':
+						this->barcode[0][pos] = "|";
+						this->barcode[1][pos] = "|";
+						break;
+				}
+				pos++;
+			}
+
+			this->barcode[0][pos] = "|";
+			this->barcode[0][pos] = "|";
+		}
+
+		void CreateFile() {
+			if(this->roman == 0) return;
+
+			this->file_name = to_string(this->roman) + ".txt";
+			file.open(file_name, ofstream::out | ofstream::trunc);
 		}
 
 	public:
@@ -55,6 +174,10 @@ class Zipcode {
 			setBarcode();
 		}
 
+		~Zipcode() {
+			file.close();
+		}
+
 		int GetRoman() {
 			return this->roman;
 		}
@@ -64,10 +187,29 @@ class Zipcode {
 		}
 
 		void PrintBarcode(destination dest) {
+			if(this->barcode[0][0] == "") return;
+
 			switch(dest) {
 				case CONSOLE:
+					for(int i = 0; i < 2; i++) {
+						for(int ii = 0; ii < 27; ii++) {
+							cout << this->barcode[i][ii] << " ";
+						}
+						cout << "\n";
+					}
 					break;
 				case TEXT_FILE:
+					if(!file.is_open()) CreateFile();
+					
+					for(int i = 0; i < 2; i++) {
+						for(int ii = 0; ii < 27; ii++) {
+							file << this->barcode[i][ii] << " ";
+						}
+						file << "\n";
+					}
+
+					cout << "Your zip code was saved in the file " << this->file_name << endl;
+
 					break;
 			}
 		}
@@ -117,15 +259,27 @@ void processZip(int prompt) {
 	string input;
 
 	if(prompt == 1) {
-		cout << "Enter a zip code in roman format (#####): ";
+		cout << endl << "Enter a zip code in roman format (#####): ";
 		cin >> input;
 
-		Zipcode zip(input, ROMAN); 
+		Zipcode zip(input, ROMAN);
+
+		cout << endl << "Your zip code is " << zip.GetRoman() << ", and the bar code looks like this:" << endl << endl;
+
+		zip.PrintBarcode(CONSOLE);
+		cout << endl;
+		zip.PrintBarcode(TEXT_FILE);
 	}
 	else if(prompt == 2) {
-		cout << "Enter a zip code in bar code format (1's and 0's): ";
+		cout << endl << "Enter a zip code in bar code format (1's and 0's): ";
 		cin >> input;
 
 		Zipcode zip(input, POSTNET);
+		
+		cout << endl << "Your zip code is " << zip.GetRoman() << ", and the bar code looks like this:" << endl << endl;
+
+		zip.PrintBarcode(CONSOLE);
+		cout << endl;
+		zip.PrintBarcode(TEXT_FILE);
 	}
 }
